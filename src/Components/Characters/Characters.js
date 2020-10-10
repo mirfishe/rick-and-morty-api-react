@@ -15,50 +15,49 @@ const Characters = (props) => {
     const [arrayLocations, setArrayLocations] = useState(props.arrayLocations);
     const [arrayEpisodes, setArrayEpisodes] = useState(props.arrayEpisodes);
 
-    const [arraySearchSpecies, setArraySearchSpecies] = useState(props.arraySearchSpecies);
+    const [arraySearchSpecies, setArraySearchSpecies] = useState([]);
     const [arraySearchCharacterTypes, setArraySearchCharacterTypes] = useState(props.arraySearchCharacterTypes);
 
     const [ddSearchSpecies, setDdSearchSpecies] = useState("");
 
     useEffect(() => {
-        console.log("Characters.js useEffect props.arrayLocations", props.arrayLocations);
+        // console.log("Characters.js useEffect props.arrayLocations", props.arrayLocations);
         setArrayLocations(props.arrayLocations);
     }, [props.arrayLocations]);
 
     useEffect(() => {
-        console.log("Characters.js useEffect props.arrayEpisodes", props.arrayEpisodes);
+        // console.log("Characters.js useEffect props.arrayEpisodes", props.arrayEpisodes);
         setArrayEpisodes(props.arrayEpisodes);
     }, [props.arrayEpisodes]);
 
     useEffect(() => {
-        console.log("Characters.js useEffect props.arraySearchSpecies", props.arraySearchSpecies);
+        // console.log("Characters.js useEffect props.arraySearchSpecies", props.arraySearchSpecies);
         setArraySearchSpecies(props.arraySearchSpecies);
-        buildSearchSpeciesLookup();
+        // buildSearchSpeciesLookup();
     }, [props.arraySearchSpecies]);
 
     useEffect(() => {
-        console.log("Characters.js useEffect props.arraySearchCharacterTypes", props.arraySearchCharacterTypes);
+        // console.log("Characters.js useEffect props.arraySearchCharacterTypes", props.arraySearchCharacterTypes);
         setArraySearchCharacterTypes(props.arraySearchCharacterTypes);
     }, [props.arraySearchCharacterTypes]);
 
-    const buildSearchSpeciesLookup = () => {
-        let searchSpecies;
-        if (arraySearchSpecies.length > 0) {
-            searchSpecies = arraySearchSpecies.map((species) => {
-                return (
-                    <option value={species}>{species}</option>
-                    )
-                })
-            };
+    // const buildSearchSpeciesLookup = () => {
+    //     let searchSpecies;
+    //     if (arraySearchSpecies.length > 0) {
+    //         searchSpecies = arraySearchSpecies.map((species) => {
+    //             return (
+    //                 <option value={species}>{species}</option>
+    //                 )
+    //             })
+    //         };
 
-        console.log("Characters.js buildSearchSpeciesLookup searchSpecies", searchSpecies);
+    //     console.log("Characters.js buildSearchSpeciesLookup searchSpecies", searchSpecies);
 
-        setDdSearchSpecies(searchSpecies);
-    };
+    //     setDdSearchSpecies(searchSpecies);
+    // };
 
     return (
         <React.Fragment>
-            <Form id="frmSearch">
                 <FormGroup>
                 <Input type="text" id="txtSearchCharacterName" placeholder="Name" />
                 </FormGroup>
@@ -66,6 +65,7 @@ const Characters = (props) => {
                 <Input type="select" id="ddSearchSpecies">
                     <option value="">Select Species</option>
                     {arraySearchSpecies.length > 0 ? arraySearchSpecies.map((species) => {
+                        // console.log("Characters.js arraySearchSpecies.map species", species);
                     return (
                         <option value={species}>{species}</option>
                         )
@@ -76,6 +76,13 @@ const Characters = (props) => {
                 <FormGroup>
                 <Input type="select" id="ddSearchCharacterType">
                     <option value="">Select Type</option>
+                    {arraySearchCharacterTypes.length > 0 ? arraySearchCharacterTypes.map((type) => {
+                        // console.log("Characters.js arraySearchCharacterTypes.map type", type);
+                    return (
+                        <option value={type}>{type}</option>
+                        )
+                    })
+                    : null}
                 </Input>
                 </FormGroup>
                 <FormGroup>
@@ -98,7 +105,6 @@ const Characters = (props) => {
                 <FormGroup>
                     <Button id="btnSearchCharacters" color="primary" size="lg">Search Characters</Button>
                 </FormGroup>
-            </Form>
         </React.Fragment>
     );
 };

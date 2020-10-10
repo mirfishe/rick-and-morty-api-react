@@ -4,16 +4,15 @@ import {Form, FormGroup, Input, Button} from "reactstrap";
 
 const Locations = (props) => {
 
-    // console.log("Characters.js props.locationsURL", props.locationsURL);
-    // console.log("Characters.js props.paginationURL", props.paginationURL);
-    // console.log("Characters.js props.arrayCharacters", props.arrayCharacters);
-    // console.log("Characters.js props.arrayEpisodes", props.arrayEpisodes);
-    // console.log("Characters.js props.arraySearchLocationTypes", props.arraySearchLocationTypes);
-    // console.log("Characters.js props.arraySearchDimensions", props.arraySearchDimensions);
+    // console.log("Locations.js props.locationsURL", props.locationsURL);
+    // console.log("Locations.js props.paginationURL", props.paginationURL);
+    // console.log("Locations.js props.arrayCharacters", props.arrayCharacters);
+    // console.log("Locations.js props.arrayEpisodes", props.arrayEpisodes);
+    // console.log("Locations.js props.arraySearchLocationTypes", props.arraySearchLocationTypes);
+    // console.log("Locations.js props.arraySearchDimensions", props.arraySearchDimensions);
 
     return (
         <React.Fragment>
-            <Form id="frmSearch">
                 <FormGroup>
                 <Input type="text" id="txtSearchLocationName" placeholder="Name" />
                 </FormGroup>
@@ -30,7 +29,6 @@ const Locations = (props) => {
                 <FormGroup>
                     <Button id="btnSearchLocations" color="primary" size="lg">Search Locations</Button>
                 </FormGroup>
-            </Form>
         </React.Fragment>
     );
 };
