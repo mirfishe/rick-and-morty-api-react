@@ -13,8 +13,10 @@ const Episodes = (props) => {
     // Build lookup arrays
     const [arrayCharacters, setArrayCharacters] = useState([]);
 
+    const [url, setUrl] = useState("");
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [nextPage, setNextPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchEpisodeName, setTxtSearchEpisodeName] = useState("");
@@ -25,6 +27,10 @@ const Episodes = (props) => {
         setArrayCharacters(props.arrayCharacters);
     }, [props.arrayCharacters]);
 
+    useEffect(() => {
+        console.log("Episodes.js useEffect url", url);
+    }, [url]);
+
     // useEffect(() => {
     //     // console.log("Episodes.js useEffect results", results);
     //     // console.log("Episodes.js useEffect results.length", results.length);
@@ -32,7 +38,7 @@ const Episodes = (props) => {
 
     const searchEpisodes = () => {
 
-        let URL = props.url;
+        let buildURL = props.url;
         let searchString = "";
       
         if (txtSearchEpisodeName !== undefined) {
@@ -49,14 +55,21 @@ const Episodes = (props) => {
       
         if (searchString !== "") {
             console.log("Episodes.js searchEpisodes searchString", searchString);
-            URL += "?" + searchString;
+            buildURL += "?" + searchString;
         };
       
-        // console.log(URL);
+        console.log("Episodes.js searchEpisodes buildURL", buildURL);
+
+        setUrl(buildURL);
       
-        fetch(URL)
+        getResults();
+
+    };
+
+    const getResults = () => {
+        fetch(url)
         .then(response => {
-            // console.log("Episodes.js searchEpisodes response", response);
+            console.log("Episodes.js searchEpisodes response", response);
             // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
             // } else {
@@ -74,6 +87,8 @@ const Episodes = (props) => {
                 console.log("Episodes.js searchEpisodes data.error", data.error);
                 setErrMessage(data.error);
             } else {
+
+                setLastPage(data.info.pages);
 
                 for (let i = 0; i < data.results.length; i++) {
                     // console.log("Episodes.js searchEpisodes data.results[i].residents", data.results[i].residents);
@@ -103,6 +118,7 @@ const Episodes = (props) => {
                 };
 
                 setResults(data.results);
+                setCurrentPage(currentPage++);
             };
         })
         .catch(err => {
@@ -114,6 +130,19 @@ const Episodes = (props) => {
 
     const getMoreResults = () => {
         console.log("Episodes.js getMoreResults");
+
+        // Removes ?page=# to the URL
+        if (url.includes(props.paginationURL)) {
+            // console.log(URL);
+            setUrl(url.slice(0, -7));
+        };
+
+        setNextPage(currentPage + 1);
+
+        // Search Pagination
+        setUrl(url + props.paginationURL + nextPage);
+
+        getResults();
 
     };
 
@@ -139,11 +168,13 @@ const Episodes = (props) => {
                         <Row className="justify-content-center">
                             <Episode results={results} />
                         </Row>
+                        {currentPage < lastPage ?
                         <Row className="justify-content-end p-4">
                             <Col className="text-right">
                             <a href="#" onClick={getMoreResults}>more</a>
                             </Col>
                         </Row>
+                        : null}
                     </Container>
                 </Row>
                 : null}

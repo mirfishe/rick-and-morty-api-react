@@ -29,7 +29,7 @@ const Character = (props) => {
                                 })} */}
                                 {character.episodesList}
                             </p>
-                            <p>All Episode(s): </p>
+                            <p><CardLink href={character.episodesList} onClick={props.loadDetailsModal}>All Episode(s):</CardLink></p>
                         </CardBody>
                         </Card>
                     )

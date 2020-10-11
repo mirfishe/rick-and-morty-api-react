@@ -16,8 +16,10 @@ const Characters = (props) => {
     const [arraySearchSpecies, setArraySearchSpecies] = useState([]);
     const [arraySearchCharacterTypes, setArraySearchCharacterTypes] = useState([]);
 
+    const [url, setUrl] = useState("");
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [nextPage, setNextPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchCharacterName, setTxtSearchCharacterName] = useState("");
@@ -42,6 +44,10 @@ const Characters = (props) => {
         setArraySearchCharacterTypes(props.arraySearchCharacterTypes);
     }, [props.arraySearchCharacterTypes]);
 
+    useEffect(() => {
+        console.log("Characters.js useEffect url", url);
+    }, [url]);
+
     // useEffect(() => {
     //     // console.log("Characters.js useEffect results", results);
     //     // console.log("Characters.js useEffect results.length", results.length);
@@ -49,7 +55,7 @@ const Characters = (props) => {
 
     const searchCharacters = () => {
 
-        let URL = props.url;
+        let buildURL = props.url;
         let searchString = "";
       
         if (txtSearchCharacterName !== undefined) {
@@ -84,14 +90,22 @@ const Characters = (props) => {
       
         if (searchString !== "") {
             console.log("Characters.js searchCharacters searchString", searchString);
-            URL += "?" + searchString;
+            buildURL += "?" + searchString;
         };
       
-        // console.log(URL);
-      
-        fetch(URL)
+        console.log("Characters.js searchCharacters buildURL", buildURL);
+
+        setUrl(buildURL);
+
+        getResults();
+        
+    };
+
+    const getResults = () => {
+
+        fetch(url)
         .then(response => {
-            // console.log("Characters.js searchCharacters response", response);
+            console.log("Characters.js searchCharacters response", response);
             // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
             // } else {
@@ -103,12 +117,14 @@ const Characters = (props) => {
             // };
         })
         .then(data => {
-            console.log("Characters.js searchCharacters data", data);
+            // console.log("Characters.js searchCharacters data", data);
 
             if (data.error !== undefined) {
                 console.log("Characters.js searchCharacters data.error", data.error);
                 setErrMessage(data.error);
             } else {
+
+                setLastPage(data.info.pages);
 
                 for (let i = 0; i < data.results.length; i++) {
                     // console.log("Characters.js searchCharacters data.results[i].residents", data.results[i].residents);
@@ -137,12 +153,8 @@ const Characters = (props) => {
 
                 };
 
-
-
-
-
-
                 setResults(data.results);
+                setCurrentPage(currentPage++);
             };
         })
         .catch(err => {
@@ -154,6 +166,18 @@ const Characters = (props) => {
 
     const getMoreResults = () => {
         console.log("Characters.js getMoreResults");
+
+        // Removes ?page=# to the URL
+        if (url.includes(props.paginationURL)) {
+            // console.log(URL);
+            setUrl(url.slice(0, -7));
+        };
+
+        setNextPage(currentPage + 1);
+        // Search Pagination
+        setUrl(url + props.paginationURL + nextPage);
+
+        getResults();
 
     };
 
@@ -217,11 +241,13 @@ const Characters = (props) => {
                         <Row className="justify-content-center">
                             <Character results={results} />
                         </Row>
+                        {currentPage < lastPage ?
                         <Row className="justify-content-end p-4">
                             <Col className="text-right">
                             <a href="#" onClick={getMoreResults}>more</a>
                             </Col>
                         </Row>
+                        : null}
                     </Container>
                 </Row>
                 : null}

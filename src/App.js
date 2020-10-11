@@ -422,6 +422,9 @@ function App() {
         <NavItem>
           <NavLink href="https://rickandmortyapi.com/documentation" target="_blank">Rick and Morty API Documentation</NavLink>
         </NavItem>
+        <NavItem>
+          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty</NavLink>
+        </NavItem>
         </Nav>
       </Collapse>
     </Navbar>

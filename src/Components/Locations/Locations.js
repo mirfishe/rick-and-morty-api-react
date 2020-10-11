@@ -16,8 +16,10 @@ const Locations = (props) => {
     const [arraySearchLocationTypes, setArraySearchLocationTypes] = useState([]);
     const [arraySearchDimensions, setArraySearchDimensions] = useState([]);
 
+    const [fetchURL, setFetchURL] = useState("");
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [nextPage, setNextPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchLocationName, setTxtSearchLocationName] = useState("");
@@ -40,6 +42,10 @@ const Locations = (props) => {
         setArraySearchDimensions(props.arraySearchDimensions);
     }, [props.arraySearchDimensions]);
 
+    useEffect(() => {
+        console.log("Locations.js useEffect fetchURL", fetchURL);
+    }, [fetchURL]);
+
     // useEffect(() => {
     //     // console.log("Locations.js useEffect results", results);
     //     // console.log("Locations.js useEffect results.length", results.length);
@@ -47,7 +53,7 @@ const Locations = (props) => {
 
     const searchLocations = () => {
 
-        let URL = props.url;
+        let buildURL = props.url;
         let searchString = "";
       
         if (txtSearchLocationName !== undefined) {
@@ -70,14 +76,22 @@ const Locations = (props) => {
       
         if (searchString !== "") {
             console.log("Locations.js searchLocations searchString", searchString);
-            URL += "?" + searchString;
+            buildURL += "?" + searchString;
         };
       
-        // console.log(URL);
-      
-        fetch(URL)
+        console.log("Locations.js searchLocations buildURL", buildURL);
+
+        setFetchURL(buildURL)
+
+        getResults();
+
+    };
+
+    const getResults = () => {
+
+        fetch(fetchURL)
         .then(response => {
-            // console.log("Locations.js searchLocations response", response);
+            console.log("Locations.js searchLocations response", response);
             // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
             // } else {
@@ -95,6 +109,8 @@ const Locations = (props) => {
                 console.log("Locations.js searchLocations data.error", data.error);
                 setErrMessage(data.error);
             } else {
+
+                setLastPage(data.info.pages);
 
                 for (let i = 0; i < data.results.length; i++) {
                     // console.log("Locations.js searchLocations data.results[i].residents", data.results[i].residents);
@@ -124,6 +140,7 @@ const Locations = (props) => {
                 };
 
                 setResults(data.results);
+                setCurrentPage(currentPage++);
             };
 
         })
@@ -136,6 +153,18 @@ const Locations = (props) => {
 
     const getMoreResults = () => {
         console.log("Locations.js getMoreResults");
+
+        // Removes ?page=# to the URL
+        if (fetchURL.includes(props.paginationURL)) {
+            // console.log(URL);
+            setFetchURL(fetchURL.slice(0, -7));
+        };
+
+        setNextPage(currentPage + 1);
+        // Search Pagination
+        setFetchURL(fetchURL + props.paginationURL + nextPage);
+
+        getResults();
 
     };
 
@@ -182,11 +211,13 @@ const Locations = (props) => {
                         <Row className="justify-content-center">
                             <Location results={results} />
                         </Row>
+                        {currentPage < lastPage ?
                         <Row className="justify-content-end p-4">
                             <Col className="text-right">
                             <a href="#" onClick={getMoreResults}>more</a>
                             </Col>
                         </Row>
+                        : null}
                     </Container>
                 </Row>
                 : null}

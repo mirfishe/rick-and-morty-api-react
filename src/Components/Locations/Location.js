@@ -24,7 +24,7 @@ const Location = (props) => {
                                 })} */}
                                 {location.residentsList}
                             </p>
-                            <p>All Resident(s): </p>
+                            <p><CardLink href={location.residentsList} onClick={props.loadDetailsModal}>All Resident(s):</CardLink></p>
                         </CardBody>
                         </Card>
                     )

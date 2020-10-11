@@ -24,7 +24,7 @@ const Episode = (props) => {
                                 })} */}
                                 {episode.charactersList}
                             </p>
-                            <p>All Character(s): </p>
+                            <p><CardLink href={episode.charactersList} onClick={props.loadDetailsModal}>All Character(s):</CardLink></p>
                         </CardBody>
                         </Card>
                     )
