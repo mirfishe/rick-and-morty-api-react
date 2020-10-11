@@ -1,23 +1,22 @@
 import React, {useState, useEffect} from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import {Row, FormGroup, Input, Button, Alert} from "reactstrap";
+import {Container, Row, Col, FormGroup, Input, Button, Alert} from "reactstrap";
 import Character from "./Character"
 
 const Characters = (props) => {
 
     // console.log("Characters.js props.url", props.url);
     // console.log("Characters.js props.paginationURL", props.paginationURL);
-    // console.log("Characters.js props.arrayLocations", props.arrayLocations);
     // console.log("Characters.js props.arrayEpisodes", props.arrayEpisodes);
     // console.log("Characters.js props.arraySearchSpecies", props.arraySearchSpecies);
     // console.log("Characters.js props.arraySearchCharacterTypes", props.arraySearchCharacterTypes);
 
     // Build lookup arrays
-    const [arrayLocations, setArrayLocations] = useState([]);
     const [arrayEpisodes, setArrayEpisodes] = useState([]);
     const [arraySearchSpecies, setArraySearchSpecies] = useState([]);
     const [arraySearchCharacterTypes, setArraySearchCharacterTypes] = useState([]);
 
+    const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
@@ -26,11 +25,6 @@ const Characters = (props) => {
     const [ddSearchCharacterType, setDdSearchCharacterType] = useState("");
     const [ddSearchStatus, setDdSearchStatus] = useState("");
     const [ddSearchGender, setDdSearchGender] = useState("");
-
-    useEffect(() => {
-        // console.log("Characters.js useEffect props.arrayLocations", props.arrayLocations);
-        setArrayLocations(props.arrayLocations);
-    }, [props.arrayLocations]);
 
     useEffect(() => {
         // console.log("Characters.js useEffect props.arrayEpisodes", props.arrayEpisodes);
@@ -47,6 +41,11 @@ const Characters = (props) => {
         // console.log("Characters.js useEffect props.arraySearchCharacterTypes", props.arraySearchCharacterTypes);
         setArraySearchCharacterTypes(props.arraySearchCharacterTypes);
     }, [props.arraySearchCharacterTypes]);
+
+    // useEffect(() => {
+    //     // console.log("Characters.js useEffect results", results);
+    //     // console.log("Characters.js useEffect results.length", results.length);
+    // }, [results]);
 
     const searchCharacters = () => {
 
@@ -84,7 +83,7 @@ const Characters = (props) => {
         };
       
         if (searchString !== "") {
-            console.log("Characters.js searchLocations searchString", searchString);
+            console.log("Characters.js searchCharacters searchString", searchString);
             URL += "?" + searchString;
         };
       
@@ -92,27 +91,69 @@ const Characters = (props) => {
       
         fetch(URL)
         .then(response => {
-            console.log("Characters.js searchCharacters response", response);
-            if (!response.ok) {
+            // console.log("Characters.js searchCharacters response", response);
+            // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
-                return response.json();
-            } else {
+            // } else {
                 // if (response.status === 200) {
                     return response.json();
                 // } else {
                 //     return response.status;
                 // };
-            };
+            // };
         })
         .then(data => {
-            console.log(data);
-            // displayEpisodes(data);
-            setErrMessage(data.error);
+            console.log("Characters.js searchCharacters data", data);
+
+            if (data.error !== undefined) {
+                console.log("Characters.js searchCharacters data.error", data.error);
+                setErrMessage(data.error);
+            } else {
+
+                for (let i = 0; i < data.results.length; i++) {
+                    // console.log("Characters.js searchCharacters data.results[i].residents", data.results[i].residents);
+                    let episodesList = "";
+                    let episodesArray = data.results[i].episode;
+
+                    for (let j = 0; j < episodesArray.length; j++) {
+                        // console.log("Characters.js searchCharacters episodesArray[j]", episodesArray[j]);
+                        for (let k = 0; k < arrayEpisodes.length; k++) {
+                            // console.log("Characters.js searchCharacters arrayEpisodes[k]", arrayEpisodes[k]);
+                            if (episodesArray[j].substr(episodesArray[j].lastIndexOf("/") + 1) == arrayEpisodes[k].id) {
+                              // console.log("Characters.js searchCharacters character name", arrayEpisodes[k].name, "it's a match");
+
+                              break;
+                            };
+                          };
+
+                          episodesList += episodesArray[j].substr(episodesArray[j].lastIndexOf("/") + 1);
+                          if (j < episodesArray.length - 1) {
+                            episodesList += ",";
+                          };
+                    };
+
+                    // console.log("Characters.js searchCharacters episodesList", episodesList);
+                    Object.assign(data.results[i], {episodesList: episodesList});
+
+                };
+
+
+
+
+
+
+                setResults(data.results);
+            };
         })
         .catch(err => {
             console.log("Characters.js searchCharacters err", err);
             setErrMessage(err);
         });
+
+    };
+
+    const getMoreResults = () => {
+        console.log("Characters.js getMoreResults");
 
     };
 
@@ -170,6 +211,20 @@ const Characters = (props) => {
                     <Button id="btnSearchCharacters" color="primary" size="lg" className="ml-4 m-2 p-2" onClick={searchCharacters}>Search Characters</Button>
                 </FormGroup>
                 </Row>
+                {results.length > 0 ?
+                <Row className="m-2 border">
+                    <Container>
+                        <Row className="justify-content-center">
+                            <Character results={results} />
+                        </Row>
+                        <Row className="justify-content-end p-4">
+                            <Col className="text-right">
+                            <a href="#" onClick={getMoreResults}>more</a>
+                            </Col>
+                        </Row>
+                    </Container>
+                </Row>
+                : null}
         </React.Fragment>
     );
 };

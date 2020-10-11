@@ -448,7 +448,7 @@ function App() {
     <TabContent activeTab={activeTab}>
       <TabPane tabId="1">
         <Row>
-          <Col sm="12">
+          <Col sm="12" className="border">
             <Characters url={charactersURL} paginationURL={paginationURL} arrayLocations={arrayLocations} arrayEpisodes={arrayEpisodes} arraySearchSpecies={arraySearchSpecies} arraySearchCharacterTypes={arraySearchCharacterTypes} />
           </Col>
         </Row>
@@ -457,8 +457,8 @@ function App() {
       <TabContent activeTab={activeTab}>
       <TabPane tabId="2">
         <Row>
-          <Col sm="12">
-            <Locations url={locationsURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arrayEpisodes={arrayEpisodes} arraySearchLocationTypes={arraySearchLocationTypes} arraySearchDimensions={arraySearchDimensions} />
+          <Col sm="12" className="border">
+            <Locations url={locationsURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arraySearchLocationTypes={arraySearchLocationTypes} arraySearchDimensions={arraySearchDimensions} />
           </Col>
         </Row>
       </TabPane>
@@ -466,8 +466,8 @@ function App() {
       <TabContent activeTab={activeTab}>
       <TabPane tabId="3">
         <Row>
-          <Col sm="12">
-            <Episodes url={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arrayLocations={arrayLocations} />
+          <Col sm="12" className="border">
+            <Episodes url={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} />
           </Col>
         </Row>
       </TabPane>

@@ -1,10 +1,35 @@
 import React, {useState, useEffect} from "react";
-import {Container, Col, Row} from "reactstrap";
+import {Container, Col, Row, Card, CardBody, CardLink} from "reactstrap";
 
 const Episode = (props) => {
 
+    // console.log("Episode.js props.results", props.results);
+
     return (
         <React.Fragment>
+
+            {props.results.length > 0 ? props.results.map((episode) => {
+                        // console.log("Episode.js results.map episode", episode);
+                    return (
+
+                        <Card key={episode.id} className="m-2 p-2">
+                        <CardBody>
+                            <p><CardLink href={episode.url} onClick={props.loadDetailsModal}>{episode.name}</CardLink></p>
+                            <p>Episode: {episode.episode}</p>
+                            <p>Air Date: {episode.air_date}</p>
+                            <p>Character(s): 
+                            {/* {episode.characters.map((character, index) => {
+                                console.log("Episode.js characters.map character", character);
+                                return ({index})
+                                })} */}
+                                {episode.charactersList}
+                            </p>
+                            <p>All Character(s): </p>
+                        </CardBody>
+                        </Card>
+                    )
+                })
+                    : null}
 
         </React.Fragment>
     );

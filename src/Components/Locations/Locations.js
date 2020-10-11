@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import {Row, FormGroup, Input, Button, Alert} from "reactstrap";
+import {Container, Row, Col, FormGroup, Input, Button, Alert} from "reactstrap";
 import Location from "./Location"
 
 const Locations = (props) => {
@@ -8,16 +8,15 @@ const Locations = (props) => {
     // console.log("Locations.js props.url", props.url);
     // console.log("Locations.js props.paginationURL", props.paginationURL);
     // console.log("Locations.js props.arrayCharacters", props.arrayCharacters);
-    // console.log("Locations.js props.arrayEpisodes", props.arrayEpisodes);
     // console.log("Locations.js props.arraySearchLocationTypes", props.arraySearchLocationTypes);
     // console.log("Locations.js props.arraySearchDimensions", props.arraySearchDimensions);
 
     // Build lookup arrays
     const [arrayCharacters, setArrayCharacters] = useState([]);
-    const [arrayEpisodes, setArrayEpisodes] = useState([]);
     const [arraySearchLocationTypes, setArraySearchLocationTypes] = useState([]);
     const [arraySearchDimensions, setArraySearchDimensions] = useState([]);
 
+    const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
@@ -31,11 +30,6 @@ const Locations = (props) => {
     }, [props.arrayCharacters]);
 
     useEffect(() => {
-        // console.log("Locations.js useEffect props.arrayEpisodes", props.arrayEpisodes);
-        setArrayEpisodes(props.arrayEpisodes);
-    }, [props.arrayEpisodes]);
-
-    useEffect(() => {
         // console.log("Locations.js useEffect props.arraySearchLocationTypes", props.arraySearchLocationTypes);
         setArraySearchLocationTypes(props.arraySearchLocationTypes);
         // buildSearchSpeciesLookup();
@@ -45,6 +39,11 @@ const Locations = (props) => {
         // console.log("Locations.js useEffect props.arraySearchDimensions", props.arraySearchDimensions);
         setArraySearchDimensions(props.arraySearchDimensions);
     }, [props.arraySearchDimensions]);
+
+    // useEffect(() => {
+    //     // console.log("Locations.js useEffect results", results);
+    //     // console.log("Locations.js useEffect results.length", results.length);
+    // }, [results]);
 
     const searchLocations = () => {
 
@@ -78,22 +77,55 @@ const Locations = (props) => {
       
         fetch(URL)
         .then(response => {
-            console.log("Locations.js searchLocations response", response);
-            if (!response.ok) {
+            // console.log("Locations.js searchLocations response", response);
+            // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
-                return response.json();
-            } else {
+            // } else {
                 // if (response.status === 200) {
                     return response.json();
                 // } else {
                 //     return response.status;
                 // };
-            };
+            // };
         })
         .then(data => {
-            console.log(data);
-            // displayEpisodes(data);
-            setErrMessage(data.error);
+            console.log("Locations.js searchLocations data", data);
+
+            if (data.error !== undefined) {
+                console.log("Locations.js searchLocations data.error", data.error);
+                setErrMessage(data.error);
+            } else {
+
+                for (let i = 0; i < data.results.length; i++) {
+                    // console.log("Locations.js searchLocations data.results[i].residents", data.results[i].residents);
+                    let residentsList = "";
+                    let residentsArray = data.results[i].residents;
+
+                    for (let j = 0; j < residentsArray.length; j++) {
+                        // console.log("Locations.js searchLocations residentsArray[j]", residentsArray[j]);
+                        for (let k = 0; k < arrayCharacters.length; k++) {
+                            // console.log("Locations.js searchLocations arrayCharacters[k]", arrayCharacters[k]);
+                            if (residentsArray[j].substr(residentsArray[j].lastIndexOf("/") + 1) == arrayCharacters[k].id) {
+                              // console.log("Locations.js searchLocations character name", arrayCharacters[k].name, "it's a match");
+
+                              break;
+                            };
+                          };
+
+                          residentsList += residentsArray[j].substr(residentsArray[j].lastIndexOf("/") + 1);
+                          if (j < residentsArray.length - 1) {
+                            residentsList += ",";
+                          };
+                    };
+
+                    // console.log("Locations.js searchLocations residentsList", residentsList);
+                    Object.assign(data.results[i], {residentsList: residentsList});
+
+                };
+
+                setResults(data.results);
+            };
+
         })
         .catch(err => {
             console.log("Locations.js searchLocations err", err);
@@ -102,10 +134,15 @@ const Locations = (props) => {
 
     };
 
+    const getMoreResults = () => {
+        console.log("Locations.js getMoreResults");
+
+    };
+
     return (
         <React.Fragment>
                 {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : ""}
-                <Row className="m-2">
+                <Row className="m-2 border">
                 <FormGroup className="m-2">
                 <Input type="text" id="txtSearchLocationName" placeholder="Name" onChange={(event) => {/*console.log(event.target.value);*/ setTxtSearchLocationName(event.target.value);}} />
                 </FormGroup>
@@ -139,6 +176,20 @@ const Locations = (props) => {
                     <Button id="btnSearchLocations" color="primary" size="lg" className="ml-4 m-2 p-2" onClick={searchLocations}>Search Locations</Button>
                 </FormGroup>
                 </Row>
+                {results.length > 0 ?
+                <Row className="m-2 border">
+                    <Container>
+                        <Row className="justify-content-center">
+                            <Location results={results} />
+                        </Row>
+                        <Row className="justify-content-end p-4">
+                            <Col className="text-right">
+                            <a href="#" onClick={getMoreResults}>more</a>
+                            </Col>
+                        </Row>
+                    </Container>
+                </Row>
+                : null}
         </React.Fragment>
     );
 };

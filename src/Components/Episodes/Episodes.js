@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import {Row, FormGroup, Input, Button, Alert} from "reactstrap";
+import {Container, Row, Col, FormGroup, Input, Button, Alert} from "reactstrap";
 import Episode from "./Episode"
 
 const Episodes = (props) => {
@@ -12,8 +12,8 @@ const Episodes = (props) => {
 
     // Build lookup arrays
     const [arrayCharacters, setArrayCharacters] = useState([]);
-    const [arrayLocations, setArrayLocations] = useState([]);
 
+    const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
@@ -21,14 +21,14 @@ const Episodes = (props) => {
     const [txtEpisode, setTxtEpisode] = useState("");
 
     useEffect(() => {
-        // console.log("Locations.js useEffect props.arrayCharacters", props.arrayCharacters);
+        // console.log("Episodes.js useEffect props.arrayCharacters", props.arrayCharacters);
         setArrayCharacters(props.arrayCharacters);
     }, [props.arrayCharacters]);
 
-    useEffect(() => {
-        // console.log("Characters.js useEffect props.arrayLocations", props.arrayLocations);
-        setArrayLocations(props.arrayLocations);
-    }, [props.arrayLocations]);
+    // useEffect(() => {
+    //     // console.log("Episodes.js useEffect results", results);
+    //     // console.log("Episodes.js useEffect results.length", results.length);
+    // }, [results]);
 
     const searchEpisodes = () => {
 
@@ -48,7 +48,7 @@ const Episodes = (props) => {
         };
       
         if (searchString !== "") {
-            console.log("Episodes.js searchLocations searchString", searchString);
+            console.log("Episodes.js searchEpisodes searchString", searchString);
             URL += "?" + searchString;
         };
       
@@ -56,27 +56,64 @@ const Episodes = (props) => {
       
         fetch(URL)
         .then(response => {
-            console.log("Episodes.js searchLocations response", response);
-            if (!response.ok) {
+            // console.log("Episodes.js searchEpisodes response", response);
+            // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
-                return response.json();
-            } else {
+            // } else {
                 // if (response.status === 200) {
                     return response.json();
                 // } else {
                 //     return response.status;
                 // };
-            };
+            // };
         })
         .then(data => {
-            console.log(data);
-            // displayEpisodes(data);
-            setErrMessage(data.error);
+            console.log("Episodes.js searchEpisodes data", data);
+
+            if (data.error !== undefined) {
+                console.log("Episodes.js searchEpisodes data.error", data.error);
+                setErrMessage(data.error);
+            } else {
+
+                for (let i = 0; i < data.results.length; i++) {
+                    // console.log("Episodes.js searchEpisodes data.results[i].residents", data.results[i].residents);
+                    let charactersList = "";
+                    let charactersArray = data.results[i].characters;
+
+                    for (let j = 0; j < charactersArray.length; j++) {
+                        // console.log("Episodes.js searchEpisodes charactersArray[j]", charactersArray[j]);
+                        for (let k = 0; k < arrayCharacters.length; k++) {
+                            // console.log("Episodes.js searchEpisodes arrayCharacters[k]", arrayCharacters[k]);
+                            if (charactersArray[j].substr(charactersArray[j].lastIndexOf("/") + 1) == arrayCharacters[k].id) {
+                              // console.log("Episodes.js searchEpisodes character name", arrayCharacters[k].name, "it's a match");
+
+                              break;
+                            };
+                          };
+
+                          charactersList += charactersArray[j].substr(charactersArray[j].lastIndexOf("/") + 1);
+                          if (j < charactersArray.length - 1) {
+                            charactersList += ",";
+                          };
+                    };
+
+                    // console.log("Episodes.js searchEpisodes charactersList", charactersList);
+                    Object.assign(data.results[i], {charactersList: charactersList});
+
+                };
+
+                setResults(data.results);
+            };
         })
         .catch(err => {
-            console.log("Episodes.js getEpisodes err", err);
+            console.log("Episodes.js searchEpisodes err", err);
             setErrMessage(err);
         });
+
+    };
+
+    const getMoreResults = () => {
+        console.log("Episodes.js getMoreResults");
 
     };
 
@@ -96,6 +133,20 @@ const Episodes = (props) => {
                     <Button id="btnSearchEpisodes" color="primary" size="lg" className="ml-4 m-2 p-2" onClick={searchEpisodes}>Search Episodes</Button>
                 </FormGroup>
                 </Row>
+                {results.length > 0 ?
+                <Row className="m-2 border">
+                    <Container>
+                        <Row className="justify-content-center">
+                            <Episode results={results} />
+                        </Row>
+                        <Row className="justify-content-end p-4">
+                            <Col className="text-right">
+                            <a href="#" onClick={getMoreResults}>more</a>
+                            </Col>
+                        </Row>
+                    </Container>
+                </Row>
+                : null}
         </React.Fragment>
     );
 };
