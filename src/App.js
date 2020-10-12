@@ -16,7 +16,7 @@ function App() {
   const paginationURL = "?page="
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState("0");
   const [errBuildCharacterLookups, setErrBuildCharacterLookups] = useState("");
   const [errBuildLocationLookups, setErrBuildLocationLookups] = useState("");
   const [errBuildEpisodeLookups, setErrBuildEpisodeLookups] = useState("");
@@ -412,7 +412,7 @@ function App() {
   return (
     <React.Fragment>
     <Navbar color="light" light expand="md">
-      <NavbarBrand href="/">Rick and Morty API</NavbarBrand>
+      <NavbarBrand href="/">Rick and Morty</NavbarBrand>
       <NavbarToggler onClick={toggleMenu} />
       <Collapse isOpen={isOpen} navbar>
       <Nav className="mr-auto" navbar>
@@ -421,6 +421,9 @@ function App() {
         </NavItem>
         <NavItem>
           <NavLink href="https://rickandmortyapi.com/documentation" target="_blank">Rick and Morty API Documentation</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty</NavLink>
         </NavItem>
         </Nav>
       </Collapse>
@@ -434,7 +437,7 @@ function App() {
     {errBuildLocationLookups !== "" ? <Alert color="danger">{errBuildLocationLookups}</Alert> : ""}
     {errBuildEpisodeLookups !== "" ? <Alert color="danger">{errBuildEpisodeLookups}</Alert> : ""}
 
-    <Nav tabs>
+    <Nav tabs className="m-2">
       <NavItem>
         <NavLink className={classnames({active: activeTab === "1"})} onClick={() => {toggleTab("1");}}>Search Characters</NavLink>
       </NavItem>
@@ -449,7 +452,7 @@ function App() {
       <TabPane tabId="1">
         <Row>
           <Col sm="12">
-            <Characters charactersURL={charactersURL} paginationURL={paginationURL} arrayLocations={arrayLocations} arrayEpisodes={arrayEpisodes} arraySearchSpecies={arraySearchSpecies} arraySearchCharacterTypes={arraySearchCharacterTypes} />
+            <Characters url={charactersURL} paginationURL={paginationURL} arrayLocations={arrayLocations} arrayEpisodes={arrayEpisodes} arraySearchSpecies={arraySearchSpecies} arraySearchCharacterTypes={arraySearchCharacterTypes} />
           </Col>
         </Row>
       </TabPane>
@@ -458,7 +461,7 @@ function App() {
       <TabPane tabId="2">
         <Row>
           <Col sm="12">
-            <Locations locationsURL={locationsURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arrayEpisodes={arrayEpisodes} arraySearchLocationTypes={arraySearchLocationTypes} arraySearchDimensions={arraySearchDimensions} />
+            <Locations url={locationsURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arraySearchLocationTypes={arraySearchLocationTypes} arraySearchDimensions={arraySearchDimensions} />
           </Col>
         </Row>
       </TabPane>
@@ -467,7 +470,7 @@ function App() {
       <TabPane tabId="3">
         <Row>
           <Col sm="12">
-            <Episodes episodesURL={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arrayLocations={arrayLocations} />
+            <Episodes url={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} />
           </Col>
         </Row>
       </TabPane>
