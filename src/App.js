@@ -412,7 +412,7 @@ function App() {
   return (
     <React.Fragment>
     <Navbar color="light" light expand="md">
-      <NavbarBrand href="/">Rick and Morty API</NavbarBrand>
+      <NavbarBrand href="/">Rick and Morty</NavbarBrand>
       <NavbarToggler onClick={toggleMenu} />
       <Collapse isOpen={isOpen} navbar>
       <Nav className="mr-auto" navbar>
