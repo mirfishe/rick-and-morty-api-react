@@ -412,7 +412,7 @@ function App() {
   return (
     <React.Fragment>
     <Navbar color="light" light expand="md">
-      <NavbarBrand href="/">Rick and Morty</NavbarBrand>
+      <NavbarBrand href="#">Rick and Morty</NavbarBrand>
       <NavbarToggler onClick={toggleMenu} />
       <Collapse isOpen={isOpen} navbar>
       <Nav className="mr-auto" navbar>
@@ -423,7 +423,7 @@ function App() {
           <NavLink href="https://rickandmortyapi.com/documentation" target="_blank">Rick and Morty API Documentation</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty</NavLink>
+          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty Version 1</NavLink>
         </NavItem>
         </Nav>
       </Collapse>
@@ -451,7 +451,7 @@ function App() {
     <TabContent activeTab={activeTab}>
       <TabPane tabId="1">
         <Row>
-          <Col sm="12" className="border">
+          <Col sm="12">
             <Characters url={charactersURL} paginationURL={paginationURL} arrayLocations={arrayLocations} arrayEpisodes={arrayEpisodes} arraySearchSpecies={arraySearchSpecies} arraySearchCharacterTypes={arraySearchCharacterTypes} />
           </Col>
         </Row>
@@ -460,7 +460,7 @@ function App() {
       <TabContent activeTab={activeTab}>
       <TabPane tabId="2">
         <Row>
-          <Col sm="12" className="border">
+          <Col sm="12">
             <Locations url={locationsURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} arraySearchLocationTypes={arraySearchLocationTypes} arraySearchDimensions={arraySearchDimensions} />
           </Col>
         </Row>
@@ -469,7 +469,8 @@ function App() {
       <TabContent activeTab={activeTab}>
       <TabPane tabId="3">
         <Row>
-          <Col sm="12" className="border">
+          <Col sm="12">
+
             <Episodes url={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} />
           </Col>
         </Row>

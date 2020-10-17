@@ -13,10 +13,11 @@ const Episodes = (props) => {
     // Build lookup arrays
     const [arrayCharacters, setArrayCharacters] = useState([]);
 
+    // The setState seems to run too slow to be used to store the url and paging variables for the fetch; use it to keep the state between fetches.
     const [url, setUrl] = useState("");
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [nextPage, setNextPage] = useState(0);
+    // const [nextPage, setNextPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchEpisodeName, setTxtSearchEpisodeName] = useState("");
@@ -27,9 +28,21 @@ const Episodes = (props) => {
         setArrayCharacters(props.arrayCharacters);
     }, [props.arrayCharacters]);
 
-    useEffect(() => {
-        console.log("Episodes.js useEffect url", url);
-    }, [url]);
+    // useEffect(() => {
+    //     console.log("Episodes.js useEffect props.url", props.url);
+    // }, [url]);
+
+    // useEffect(() => {
+    //     console.log("Episodes.js useEffect currentPage", currentPage);
+    // }, [currentPage]);
+
+    // useEffect(() => {
+    //     console.log("Episodes.js useEffect nextPage", nextPage);
+    // }, [nextPage]);
+
+    // useEffect(() => {
+    //     console.log("Episodes.js useEffect lastPage", lastPage);
+    // }, [lastPage]);
 
     // useEffect(() => {
     //     // console.log("Episodes.js useEffect results", results);
@@ -37,7 +50,7 @@ const Episodes = (props) => {
     // }, [results]);
 
     const searchEpisodes = () => {
-
+        // Only run the first time the form is submitted
         let buildURL = props.url;
         let searchString = "";
       
@@ -58,18 +71,23 @@ const Episodes = (props) => {
             buildURL += "?" + searchString;
         };
       
-        console.log("Episodes.js searchEpisodes buildURL", buildURL);
+        // console.log("Episodes.js searchEpisodes buildURL", buildURL);
 
         setUrl(buildURL);
       
-        getResults();
+        // getResults();
+        getResults(buildURL);
 
     };
 
-    const getResults = () => {
-        fetch(url)
+    // const getResults = () => {
+    //     fetch(url)
+    const getResults = (buildURL) => {
+        // console.log("Episodes.js getResults buildURL", buildURL);
+
+        fetch(buildURL)
         .then(response => {
-            console.log("Episodes.js searchEpisodes response", response);
+            // console.log("Episodes.js getResults response", response);
             // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
             // } else {
@@ -81,26 +99,26 @@ const Episodes = (props) => {
             // };
         })
         .then(data => {
-            console.log("Episodes.js searchEpisodes data", data);
+            // console.log("Episodes.js getResults data", data);
 
             if (data.error !== undefined) {
-                console.log("Episodes.js searchEpisodes data.error", data.error);
+                console.log("Episodes.js getResults data.error", data.error);
                 setErrMessage(data.error);
             } else {
 
                 setLastPage(data.info.pages);
 
                 for (let i = 0; i < data.results.length; i++) {
-                    // console.log("Episodes.js searchEpisodes data.results[i].residents", data.results[i].residents);
+                    // console.log("Episodes.js getResults data.results[i].residents", data.results[i].residents);
                     let charactersList = "";
                     let charactersArray = data.results[i].characters;
 
                     for (let j = 0; j < charactersArray.length; j++) {
-                        // console.log("Episodes.js searchEpisodes charactersArray[j]", charactersArray[j]);
+                        // console.log("Episodes.js getResults charactersArray[j]", charactersArray[j]);
                         for (let k = 0; k < arrayCharacters.length; k++) {
-                            // console.log("Episodes.js searchEpisodes arrayCharacters[k]", arrayCharacters[k]);
+                            // console.log("Episodes.js getResults arrayCharacters[k]", arrayCharacters[k]);
                             if (charactersArray[j].substr(charactersArray[j].lastIndexOf("/") + 1) == arrayCharacters[k].id) {
-                              // console.log("Episodes.js searchEpisodes character name", arrayCharacters[k].name, "it's a match");
+                              // console.log("Episodes.js getResults character name", arrayCharacters[k].name, "it's a match");
 
                               break;
                             };
@@ -112,37 +130,47 @@ const Episodes = (props) => {
                           };
                     };
 
-                    // console.log("Episodes.js searchEpisodes charactersList", charactersList);
+                    // console.log("Episodes.js getResults charactersList", charactersList);
                     Object.assign(data.results[i], {charactersList: charactersList});
 
                 };
 
                 setResults(data.results);
-                setCurrentPage(currentPage++);
+                setCurrentPage(currentPage + 1);
             };
         })
         .catch(err => {
-            console.log("Episodes.js searchEpisodes err", err);
+            console.log("Episodes.js getResults err", err);
             setErrMessage(err);
         });
 
     };
 
     const getMoreResults = () => {
-        console.log("Episodes.js getMoreResults");
+        // console.log("Episodes.js getMoreResults");
+
+        // Clears the current results
+        // Shouldn't clear the results but add on to them
+        setResults([]);
+
+        let buildURL = url;
 
         // Removes ?page=# to the URL
         if (url.includes(props.paginationURL)) {
             // console.log(URL);
-            setUrl(url.slice(0, -7));
+            // setUrl(url.slice(0, -7));
+            buildURL = url.slice(0, -7);
         };
 
-        setNextPage(currentPage + 1);
+        // setNextPage(currentPage + 1);
+        let buildNextPage = currentPage + 1;
 
         // Search Pagination
-        setUrl(url + props.paginationURL + nextPage);
+        setUrl(buildURL + props.paginationURL + buildNextPage);
+        buildURL = buildURL + props.paginationURL + buildNextPage;
+        // console.log("Episodes.js getMoreResults buildURL", buildURL);
 
-        getResults();
+        getResults(buildURL);
 
     };
 

@@ -16,10 +16,11 @@ const Characters = (props) => {
     const [arraySearchSpecies, setArraySearchSpecies] = useState([]);
     const [arraySearchCharacterTypes, setArraySearchCharacterTypes] = useState([]);
 
+    // The setState seems to run too slow to be used to store the url and paging variables for the fetch; use it to keep the state between fetches.
     const [url, setUrl] = useState("");
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [nextPage, setNextPage] = useState(0);
+    // const [nextPage, setNextPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchCharacterName, setTxtSearchCharacterName] = useState("");
@@ -44,14 +45,62 @@ const Characters = (props) => {
         setArraySearchCharacterTypes(props.arraySearchCharacterTypes);
     }, [props.arraySearchCharacterTypes]);
 
-    useEffect(() => {
-        console.log("Characters.js useEffect url", url);
-    }, [url]);
+    // useEffect(() => {
+    //     console.log("Characters.js useEffect url", url);
+    // }, [url]);
+
+    // useEffect(() => {
+    //     console.log("Characters.js useEffect currentPage", currentPage);
+    // }, [currentPage]);
+
+    // useEffect(() => {
+    //     console.log("Characters.js useEffect nextPage", nextPage);
+    // }, [nextPage]);
+
+    // useEffect(() => {
+    //     console.log("Characters.js useEffect lastPage", lastPage);
+    // }, [lastPage]);
 
     // useEffect(() => {
     //     // console.log("Characters.js useEffect results", results);
     //     // console.log("Characters.js useEffect results.length", results.length);
     // }, [results]);
+
+    useEffect(() => {
+        if (ddSearchSpecies !== undefined && ddSearchSpecies !== "") {
+            console.log("Locations.js useEffect ddSearchSpecies", ddSearchSpecies);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchCharacters();
+        };
+    }, [ddSearchSpecies]);
+
+    useEffect(() => {
+        if (ddSearchCharacterType !== undefined && ddSearchCharacterType !== "") {
+            console.log("Locations.js useEffect ddSearchCharacterType", ddSearchCharacterType);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchCharacters();
+        };
+    }, [ddSearchCharacterType]);
+
+    useEffect(() => {
+        if (ddSearchStatus !== undefined && ddSearchStatus !== "") {
+            console.log("Locations.js useEffect ddSearchStatus", ddSearchStatus);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchCharacters();
+        };
+    }, [ddSearchStatus]);
+
+    useEffect(() => {
+        if (ddSearchGender !== undefined && ddSearchGender !== "") {
+            console.log("Locations.js useEffect ddSearchGender", ddSearchGender);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchCharacters();
+        };
+    }, [ddSearchGender]);
 
     const searchCharacters = () => {
 
@@ -93,17 +142,21 @@ const Characters = (props) => {
             buildURL += "?" + searchString;
         };
       
-        console.log("Characters.js searchCharacters buildURL", buildURL);
+        // console.log("Characters.js searchCharacters buildURL", buildURL);
 
         setUrl(buildURL);
-
-        getResults();
+      
+        // getResults();
+        getResults(buildURL);
         
     };
 
-    const getResults = () => {
+    // const getResults = () => {
+    //     fetch(url)
+    const getResults = (buildURL) => {
+        // console.log("Characters.js getResults buildURL", buildURL);
 
-        fetch(url)
+        fetch(buildURL)
         .then(response => {
             console.log("Characters.js searchCharacters response", response);
             // if (!response.ok) {
@@ -154,7 +207,7 @@ const Characters = (props) => {
                 };
 
                 setResults(data.results);
-                setCurrentPage(currentPage++);
+                setCurrentPage(currentPage + 1);
             };
         })
         .catch(err => {
@@ -165,19 +218,30 @@ const Characters = (props) => {
     };
 
     const getMoreResults = () => {
-        console.log("Characters.js getMoreResults");
+        // console.log("Characters.js getMoreResults");
+
+        // Clears the current results
+        // Shouldn't clear the results but add on to them
+        setResults([]);
+
+        let buildURL = url;
 
         // Removes ?page=# to the URL
         if (url.includes(props.paginationURL)) {
             // console.log(URL);
-            setUrl(url.slice(0, -7));
+            // setUrl(url.slice(0, -7));
+            buildURL = url.slice(0, -7);
         };
 
-        setNextPage(currentPage + 1);
-        // Search Pagination
-        setUrl(url + props.paginationURL + nextPage);
+        // setNextPage(currentPage + 1);
+        let buildNextPage = currentPage + 1;
 
-        getResults();
+        // Search Pagination
+        setUrl(buildURL + props.paginationURL + buildNextPage);
+        buildURL = buildURL + props.paginationURL + buildNextPage;
+        // console.log("Characters.js getMoreResults buildURL", buildURL);
+
+        getResults(buildURL);
 
     };
 
@@ -239,7 +303,7 @@ const Characters = (props) => {
                 <Row className="m-2 border">
                     <Container>
                         <Row className="justify-content-center">
-                            <Character results={results} />
+                            <Character results={results} setDdSearchSpecies={setDdSearchSpecies} setDdSearchCharacterType={setDdSearchCharacterType} setDdSearchStatus={setDdSearchStatus} setDdSearchGender={setDdSearchGender} />
                         </Row>
                         {currentPage < lastPage ?
                         <Row className="justify-content-end p-4">

@@ -22,7 +22,7 @@ const Episode = (props) => {
                                 console.log("Episode.js characters.map character", character);
                                 return ({index})
                                 })} */}
-                                {episode.charactersList}
+                                {/* {episode.charactersList} */}
                             </p>
                             <p><CardLink href={episode.charactersList} onClick={props.loadDetailsModal}>All Character(s):</CardLink></p>
                         </CardBody>

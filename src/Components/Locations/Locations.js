@@ -16,10 +16,11 @@ const Locations = (props) => {
     const [arraySearchLocationTypes, setArraySearchLocationTypes] = useState([]);
     const [arraySearchDimensions, setArraySearchDimensions] = useState([]);
 
-    const [fetchURL, setFetchURL] = useState("");
+    // The setState seems to run too slow to be used to store the url and paging variables for the fetch; use it to keep the state between fetches.
+    const [url, setUrl] = useState("");
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [nextPage, setNextPage] = useState(0);
+    // const [nextPage, setNextPage] = useState(0);
     const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchLocationName, setTxtSearchLocationName] = useState("");
@@ -42,14 +43,44 @@ const Locations = (props) => {
         setArraySearchDimensions(props.arraySearchDimensions);
     }, [props.arraySearchDimensions]);
 
-    useEffect(() => {
-        console.log("Locations.js useEffect fetchURL", fetchURL);
-    }, [fetchURL]);
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect props.url", props.url);
+    // }, [url]);
+
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect currentPage", currentPage);
+    // }, [currentPage]);
+
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect nextPage", nextPage);
+    // }, [nextPage]);
+
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect lastPage", lastPage);
+    // }, [lastPage]);
 
     // useEffect(() => {
     //     // console.log("Locations.js useEffect results", results);
     //     // console.log("Locations.js useEffect results.length", results.length);
     // }, [results]);
+
+    useEffect(() => {
+        if (ddSearchLocationType !== undefined && ddSearchLocationType !== "") {
+            console.log("Locations.js useEffect ddSearchLocationType", ddSearchLocationType);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchLocations();
+        };
+    }, [ddSearchLocationType]);
+
+    useEffect(() => {
+        if (ddSearchDimension !== undefined && ddSearchDimension !== "") {
+            console.log("Locations.js useEffect ddSearchDimension", ddSearchDimension);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchLocations();
+        };
+    }, [ddSearchDimension]);
 
     const searchLocations = () => {
 
@@ -79,19 +110,23 @@ const Locations = (props) => {
             buildURL += "?" + searchString;
         };
       
-        console.log("Locations.js searchLocations buildURL", buildURL);
+        // console.log("Locations.js searchLocations buildURL", buildURL);
 
-        setFetchURL(buildURL)
-
-        getResults();
+        setUrl(buildURL);
+      
+        // getResults();
+        getResults(buildURL);
 
     };
 
-    const getResults = () => {
+    // const getResults = () => {
+    //     fetch(url)
+    const getResults = (buildURL) => {
+        // console.log("Locations.js getResults buildURL", buildURL);
 
-        fetch(fetchURL)
+        fetch(buildURL)
         .then(response => {
-            console.log("Locations.js searchLocations response", response);
+            // console.log("Locations.js searchLocations response", response);
             // if (!response.ok) {
                 // throw Error(response.status + " " + response.statusText + " " + response.url);
             // } else {
@@ -103,7 +138,7 @@ const Locations = (props) => {
             // };
         })
         .then(data => {
-            console.log("Locations.js searchLocations data", data);
+            // console.log("Locations.js searchLocations data", data);
 
             if (data.error !== undefined) {
                 console.log("Locations.js searchLocations data.error", data.error);
@@ -140,7 +175,7 @@ const Locations = (props) => {
                 };
 
                 setResults(data.results);
-                setCurrentPage(currentPage++);
+                setCurrentPage(currentPage + 1);
             };
 
         })
@@ -152,26 +187,37 @@ const Locations = (props) => {
     };
 
     const getMoreResults = () => {
-        console.log("Locations.js getMoreResults");
+        // console.log("Locations.js getMoreResults");
+
+        // Clears the current results
+        // Shouldn't clear the results but add on to them
+        setResults([]);
+
+        let buildURL = url;
 
         // Removes ?page=# to the URL
-        if (fetchURL.includes(props.paginationURL)) {
+        if (url.includes(props.paginationURL)) {
             // console.log(URL);
-            setFetchURL(fetchURL.slice(0, -7));
+            // setUrl(url.slice(0, -7));
+            buildURL = url.slice(0, -7);
         };
 
-        setNextPage(currentPage + 1);
-        // Search Pagination
-        setFetchURL(fetchURL + props.paginationURL + nextPage);
+        // setNextPage(currentPage + 1);
+        let buildNextPage = currentPage + 1;
 
-        getResults();
+        // Search Pagination
+        setUrl(buildURL + props.paginationURL + buildNextPage);
+        buildURL = buildURL + props.paginationURL + buildNextPage;
+        // console.log("Locations.js getMoreResults buildURL", buildURL);
+
+        getResults(buildURL);
 
     };
 
     return (
         <React.Fragment>
                 {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : ""}
-                <Row className="m-2 border">
+                <Row className="m-2">
                 <FormGroup className="m-2">
                 <Input type="text" id="txtSearchLocationName" placeholder="Name" onChange={(event) => {/*console.log(event.target.value);*/ setTxtSearchLocationName(event.target.value);}} />
                 </FormGroup>
@@ -209,7 +255,7 @@ const Locations = (props) => {
                 <Row className="m-2 border">
                     <Container>
                         <Row className="justify-content-center">
-                            <Location results={results} />
+                            <Location results={results} setDdSearchLocationType={setDdSearchLocationType} setDdSearchDimension={setDdSearchDimension} />
                         </Row>
                         {currentPage < lastPage ?
                         <Row className="justify-content-end p-4">
