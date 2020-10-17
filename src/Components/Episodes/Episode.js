@@ -1,5 +1,5 @@
-import React from "react";
-import {Card, CardBody} from "reactstrap";
+import React, {useState, useEffect} from "react";
+import {Container, Col, Row, Card, CardBody, CardLink} from "reactstrap";
 
 const Episode = (props) => {
 
@@ -14,10 +14,17 @@ const Episode = (props) => {
 
                         <Card key={episode.id} className="m-2 p-2">
                         <CardBody>
-                            <p>{episode.name}</p>
+                            <p><CardLink href={episode.url} onClick={props.loadDetailsModal}>{episode.name}</CardLink></p>
                             <p>Episode: {episode.episode}</p>
                             <p>Air Date: {episode.air_date}</p>
-                            <p>Character(s): {episode.charactersList}</p>
+                            <p>Character(s): 
+                            {/* {episode.characters.map((character, index) => {
+                                console.log("Episode.js characters.map character", character);
+                                return ({index})
+                                })} */}
+                                {/* {episode.charactersList} */}
+                            </p>
+                            <p><CardLink href={episode.charactersList} onClick={props.loadDetailsModal}>All Character(s):</CardLink></p>
                         </CardBody>
                         </Card>
                     )

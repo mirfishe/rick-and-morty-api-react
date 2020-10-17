@@ -412,7 +412,7 @@ function App() {
   return (
     <React.Fragment>
     <Navbar color="light" light expand="md">
-      <NavbarBrand href="/">Rick and Morty</NavbarBrand>
+      <NavbarBrand href="#">Rick and Morty</NavbarBrand>
       <NavbarToggler onClick={toggleMenu} />
       <Collapse isOpen={isOpen} navbar>
       <Nav className="mr-auto" navbar>
@@ -423,7 +423,7 @@ function App() {
           <NavLink href="https://rickandmortyapi.com/documentation" target="_blank">Rick and Morty API Documentation</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty</NavLink>
+          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty Version 1</NavLink>
         </NavItem>
         </Nav>
       </Collapse>

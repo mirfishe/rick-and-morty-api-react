@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import {Container, Row, FormGroup, Input, Button, Alert} from "reactstrap";
+import {Container, Row, Col, FormGroup, Input, Button, Alert} from "reactstrap";
 import Location from "./Location"
 
 const Locations = (props) => {
@@ -16,7 +16,12 @@ const Locations = (props) => {
     const [arraySearchLocationTypes, setArraySearchLocationTypes] = useState([]);
     const [arraySearchDimensions, setArraySearchDimensions] = useState([]);
 
+    // The setState seems to run too slow to be used to store the url and paging variables for the fetch; use it to keep the state between fetches.
+    const [url, setUrl] = useState("");
     const [results, setResults] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    // const [nextPage, setNextPage] = useState(0);
+    const [lastPage, setLastPage] = useState(0);
     const [errMessage, setErrMessage] = useState("");
     const [txtSearchLocationName, setTxtSearchLocationName] = useState("");
     const [ddSearchLocationType, setDdSearchLocationType] = useState("");
@@ -39,13 +44,47 @@ const Locations = (props) => {
     }, [props.arraySearchDimensions]);
 
     // useEffect(() => {
+    //     console.log("Locations.js useEffect props.url", props.url);
+    // }, [url]);
+
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect currentPage", currentPage);
+    // }, [currentPage]);
+
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect nextPage", nextPage);
+    // }, [nextPage]);
+
+    // useEffect(() => {
+    //     console.log("Locations.js useEffect lastPage", lastPage);
+    // }, [lastPage]);
+
+    // useEffect(() => {
     //     // console.log("Locations.js useEffect results", results);
     //     // console.log("Locations.js useEffect results.length", results.length);
     // }, [results]);
 
+    useEffect(() => {
+        if (ddSearchLocationType !== undefined && ddSearchLocationType !== "") {
+            console.log("Locations.js useEffect ddSearchLocationType", ddSearchLocationType);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchLocations();
+        };
+    }, [ddSearchLocationType]);
+
+    useEffect(() => {
+        if (ddSearchDimension !== undefined && ddSearchDimension !== "") {
+            console.log("Locations.js useEffect ddSearchDimension", ddSearchDimension);
+            // Runs the search everytime a select is made and then there is no need for the search button except to submit the name text.
+            // Doesn't change the value for the drop down in the form.
+            searchLocations();
+        };
+    }, [ddSearchDimension]);
+
     const searchLocations = () => {
 
-        let searchURL = props.url;
+        let buildURL = props.url;
         let searchString = "";
       
         if (txtSearchLocationName !== undefined) {
@@ -68,12 +107,24 @@ const Locations = (props) => {
       
         if (searchString !== "") {
             console.log("Locations.js searchLocations searchString", searchString);
-            searchURL += "?" + searchString;
+            buildURL += "?" + searchString;
         };
       
-        // console.log("Locations.js searchLocations searchURL", searchURL);
+        // console.log("Locations.js searchLocations buildURL", buildURL);
 
-        fetch(searchURL)
+        setUrl(buildURL);
+      
+        // getResults();
+        getResults(buildURL);
+
+    };
+
+    // const getResults = () => {
+    //     fetch(url)
+    const getResults = (buildURL) => {
+        // console.log("Locations.js getResults buildURL", buildURL);
+
+        fetch(buildURL)
         .then(response => {
             // console.log("Locations.js searchLocations response", response);
             // if (!response.ok) {
@@ -93,6 +144,8 @@ const Locations = (props) => {
                 console.log("Locations.js searchLocations data.error", data.error);
                 setErrMessage(data.error);
             } else {
+
+                setLastPage(data.info.pages);
 
                 for (let i = 0; i < data.results.length; i++) {
                     // console.log("Locations.js searchLocations data.results[i].residents", data.results[i].residents);
@@ -122,7 +175,7 @@ const Locations = (props) => {
                 };
 
                 setResults(data.results);
-
+                setCurrentPage(currentPage + 1);
             };
 
         })
@@ -130,6 +183,34 @@ const Locations = (props) => {
             console.log("Locations.js searchLocations err", err);
             setErrMessage(err);
         });
+
+    };
+
+    const getMoreResults = () => {
+        // console.log("Locations.js getMoreResults");
+
+        // Clears the current results
+        // Shouldn't clear the results but add on to them
+        setResults([]);
+
+        let buildURL = url;
+
+        // Removes ?page=# to the URL
+        if (url.includes(props.paginationURL)) {
+            // console.log(URL);
+            // setUrl(url.slice(0, -7));
+            buildURL = url.slice(0, -7);
+        };
+
+        // setNextPage(currentPage + 1);
+        let buildNextPage = currentPage + 1;
+
+        // Search Pagination
+        setUrl(buildURL + props.paginationURL + buildNextPage);
+        buildURL = buildURL + props.paginationURL + buildNextPage;
+        // console.log("Locations.js getMoreResults buildURL", buildURL);
+
+        getResults(buildURL);
 
     };
 
@@ -171,11 +252,18 @@ const Locations = (props) => {
                 </FormGroup>
                 </Row>
                 {results.length > 0 ?
-                <Row className="m-2">
+                <Row className="m-2 border">
                     <Container>
                         <Row className="justify-content-center">
-                            <Location results={results} />
+                            <Location results={results} setDdSearchLocationType={setDdSearchLocationType} setDdSearchDimension={setDdSearchDimension} />
                         </Row>
+                        {currentPage < lastPage ?
+                        <Row className="justify-content-end p-4">
+                            <Col className="text-right">
+                            <a href="#" onClick={getMoreResults}>more</a>
+                            </Col>
+                        </Row>
+                        : null}
                     </Container>
                 </Row>
                 : null}
