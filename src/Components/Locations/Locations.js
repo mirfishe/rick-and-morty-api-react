@@ -252,7 +252,7 @@ const Locations = (props) => {
                 </FormGroup>
                 </Row>
                 {results.length > 0 ?
-                <Row className="m-2 border">
+                <Row className="m-2">
                     <Container>
                         <Row className="justify-content-center">
                             <Location results={results} setDdSearchLocationType={setDdSearchLocationType} setDdSearchDimension={setDdSearchDimension} />
