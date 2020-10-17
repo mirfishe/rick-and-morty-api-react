@@ -412,11 +412,7 @@ function App() {
   return (
     <React.Fragment>
     <Navbar color="light" light expand="md">
-<<<<<<< HEAD
       <NavbarBrand href="#">Rick and Morty</NavbarBrand>
-=======
-      <NavbarBrand href="/">Rick and Morty</NavbarBrand>
->>>>>>> ff1dc32096b2398d8150d0a48220aae0515fdfa0
       <NavbarToggler onClick={toggleMenu} />
       <Collapse isOpen={isOpen} navbar>
       <Nav className="mr-auto" navbar>
@@ -427,11 +423,7 @@ function App() {
           <NavLink href="https://rickandmortyapi.com/documentation" target="_blank">Rick and Morty API Documentation</NavLink>
         </NavItem>
         <NavItem>
-<<<<<<< HEAD
           <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty Version 1</NavLink>
-=======
-          <NavLink href="https://mirfishe.github.io/Rick-and-Morty-API/" target="_blank">Rick and Morty</NavLink>
->>>>>>> ff1dc32096b2398d8150d0a48220aae0515fdfa0
         </NavItem>
         </Nav>
       </Collapse>
@@ -478,10 +470,6 @@ function App() {
       <TabPane tabId="3">
         <Row>
           <Col sm="12">
-<<<<<<< HEAD
-
-=======
->>>>>>> ff1dc32096b2398d8150d0a48220aae0515fdfa0
             <Episodes url={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} />
           </Col>
         </Row>
