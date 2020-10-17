@@ -470,7 +470,6 @@ function App() {
       <TabPane tabId="3">
         <Row>
           <Col sm="12">
-
             <Episodes url={episodesURL} paginationURL={paginationURL} arrayCharacters={arrayCharacters} />
           </Col>
         </Row>
