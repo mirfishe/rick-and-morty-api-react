@@ -106,7 +106,7 @@ const Locations = (props) => {
         };
       
         if (searchString !== "") {
-            console.log("Locations.js searchLocations searchString", searchString);
+            // console.log("Locations.js searchLocations searchString", searchString);
             buildURL += "?" + searchString;
         };
       
@@ -216,14 +216,15 @@ const Locations = (props) => {
 
     return (
         <React.Fragment>
-                {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : ""}
+                {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : null}
+                {url !== "" ? <Alert color="primary">{url}</Alert> : null}
                 <Row className="m-2">
                 <FormGroup className="m-2">
                 <Input type="text" id="txtSearchLocationName" placeholder="Name" onChange={(event) => {/*console.log(event.target.value);*/ setTxtSearchLocationName(event.target.value);}} />
                 </FormGroup>
                 <FormGroup className="m-2">
                 <Input type="select" id="ddSearchLocationType" onChange={(event) => {/*console.log(event.target.value);*/ setDdSearchLocationType(event.target.value);}} >
-                    <option value="">Select Type</option>
+                    <option selected value="">Select Type</option>
                     {arraySearchLocationTypes.length > 0 ? arraySearchLocationTypes.map((type) => {
                         // console.log("Locations.js arraySearchLocationTypes.map type", type);
                     return (
@@ -235,7 +236,7 @@ const Locations = (props) => {
                 </FormGroup>
                 <FormGroup className="m-2">
                 <Input type="select" id="ddSearchDimension" onChange={(event) => {/*console.log(event.target.value);*/ setDdSearchDimension(event.target.value);}} >
-                    <option value="">Select Dimension</option>
+                    <option selected value="">Select Dimension</option>
                     {arraySearchDimensions.length > 0 ? arraySearchDimensions.map((dimension) => {
                         // console.log("Locations.js arraySearchDimensions.map dimension", dimension);
                     return (

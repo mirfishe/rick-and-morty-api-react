@@ -138,7 +138,7 @@ const Characters = (props) => {
         };
       
         if (searchString !== "") {
-            console.log("Characters.js searchCharacters searchString", searchString);
+            // console.log("Characters.js searchCharacters searchString", searchString);
             buildURL += "?" + searchString;
         };
       
@@ -247,7 +247,8 @@ const Characters = (props) => {
 
     return (
         <React.Fragment>
-                {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : ""}
+                {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : null}
+                {url !== "" ? <Alert color="primary">{url}</Alert> : null}
                 <Row className="m-2">
                 <FormGroup className="m-2">
                 <Input type="text" id="txtSearchCharacterName" placeholder="Name" onChange={(event) => {/*console.log(event.target.value);*/ setTxtSearchCharacterName(event.target.value);}} />
@@ -266,7 +267,7 @@ const Characters = (props) => {
                 </FormGroup>
                 <FormGroup className="m-2">
                 <Input type="select" id="ddSearchCharacterType" onChange={(event) => {/*console.log(event.target.value);*/ setDdSearchCharacterType(event.target.value);}}>
-                    <option value="">Select Type</option>
+                    <option selected value="">Select Type</option>
                     {arraySearchCharacterTypes.length > 0 ? arraySearchCharacterTypes.map((type) => {
                         // console.log("Characters.js arraySearchCharacterTypes.map type", type);
                     return (
@@ -278,7 +279,7 @@ const Characters = (props) => {
                 </FormGroup>
                 <FormGroup className="m-2">
                 <Input type="select" id="ddSearchStatus" onChange={(event) => {/*console.log(event.target.value);*/ setDdSearchStatus(event.target.value);}}>
-                    <option value="">Select Status</option>
+                    <option selected value="">Select Status</option>
                     <option value="alive">Alive</option>
                     <option value="dead">Dead</option>
                     <option value="unknown">Unknown</option>
@@ -286,7 +287,7 @@ const Characters = (props) => {
                 </FormGroup>
                 <FormGroup className="m-2">
                 <Input type="select" id="ddSearchGender" onChange={(event) => {/*console.log(event.target.value);*/ setDdSearchGender(event.target.value);}}>
-                    <option value="">Select Gender</option>
+                    <option selected value="">Select Gender</option>
                     <option value="female">Female</option>
                     <option value="male">Male</option>
                     <option value="genderless">Genderless</option>
