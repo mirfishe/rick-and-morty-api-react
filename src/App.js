@@ -375,9 +375,7 @@ function App() {
   };
 
   useEffect(() => {
-
     loadAllLookupArrays();
-
   }, []);
 
   useEffect(() => {
@@ -393,19 +391,19 @@ function App() {
   }, [arrayEpisodes]);
   
   useEffect(() => {
-    // console.log("App.js useEffect arraySearchSpecies", arraySearchSpecies);
+    console.log("App.js useEffect arraySearchSpecies", arraySearchSpecies);
   }, [arraySearchSpecies]);
   
   useEffect(() => {
-    // console.log("App.js useEffect arraySearchCharacterTypes", arraySearchCharacterTypes);
+    console.log("App.js useEffect arraySearchCharacterTypes", arraySearchCharacterTypes);
   }, [arraySearchCharacterTypes]);
   
   useEffect(() => {
-    // console.log("App.js useEffect arraySearchLocationTypes", arraySearchLocationTypes);
+    console.log("App.js useEffect arraySearchLocationTypes", arraySearchLocationTypes);
   }, [arraySearchLocationTypes]);
   
   useEffect(() => {
-    // console.log("App.js useEffect arraySearchDimensions", arraySearchDimensions);
+    console.log("App.js useEffect arraySearchDimensions", arraySearchDimensions);
   }, [arraySearchDimensions]);
   
 
@@ -433,9 +431,9 @@ function App() {
         <h1 className="display-3">Rick and Morty</h1>
     </Jumbotron>
 
-    {errBuildCharacterLookups !== "" ? <Alert color="danger">{errBuildCharacterLookups}</Alert> : ""}
-    {errBuildLocationLookups !== "" ? <Alert color="danger">{errBuildLocationLookups}</Alert> : ""}
-    {errBuildEpisodeLookups !== "" ? <Alert color="danger">{errBuildEpisodeLookups}</Alert> : ""}
+    {errBuildCharacterLookups !== "" ? <Alert color="danger">{errBuildCharacterLookups}</Alert> : null}
+    {errBuildLocationLookups !== "" ? <Alert color="danger">{errBuildLocationLookups}</Alert> : null}
+    {errBuildEpisodeLookups !== "" ? <Alert color="danger">{errBuildEpisodeLookups}</Alert> : null}
 
     <Nav tabs className="m-2">
       <NavItem>

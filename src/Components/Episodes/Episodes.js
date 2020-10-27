@@ -67,7 +67,7 @@ const Episodes = (props) => {
         };
       
         if (searchString !== "") {
-            console.log("Episodes.js searchEpisodes searchString", searchString);
+            // console.log("Episodes.js searchEpisodes searchString", searchString);
             buildURL += "?" + searchString;
         };
       
@@ -176,7 +176,8 @@ const Episodes = (props) => {
 
     return (
         <React.Fragment>
-                {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : ""}
+                {errMessage !== "" ? <Alert color="danger">{errMessage}</Alert> : null}
+                {url !== "" ? <Alert color="primary">{url}</Alert> : null}
                 <Row className="m-2">
                     <FormGroup className="m-2">
                     <Input type="text" id="txtSearchEpisodeName" placeholder="Name" onChange={(event) => {/*console.log(event.target.value);*/ setTxtSearchEpisodeName(event.target.value);}} />

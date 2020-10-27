@@ -1,16 +1,9 @@
 import React, {useState, useEffect} from "react";
-import {Container, Col, Row, Card, CardBody, CardLink} from "reactstrap";
+import {Container, Col, Row, Link, Modal, ModalBody, ModalHeader, ModalFooter} from "reactstrap";
 
-const Episode = (props) => {
+const EpisodeModal = (props) => {
 
     // console.log("Episode.js props.results", props.results);
-    
-    const [modal, setModal] = useState(false);
-
-    const loadDetailsModal = () => {
-        console.log("Episode.js loadDetailsModal", loadDetailsModal);
-        setModal(!modal);
-    };
 
     return (
         <React.Fragment>
@@ -19,9 +12,10 @@ const Episode = (props) => {
                         // console.log("Episode.js results.map episode", episode);
                     return (
 
-                        <Card key={episode.id} className="m-2 p-2">
-                        <CardBody>
-                            <p><CardLink href={episode.url} onClick={loadDetailsModal}>{episode.name}</CardLink></p>
+                        <Modal key={episode.id} isOpen={props.modal} toggle={props.loadDetailsModal} >
+                        <ModalHeader>{episode.name}</ModalHeader>
+                        <ModalBody>
+                            <p><Link href={episode.url} onClick={loadDetailsModal}>{episode.name}</Link></p>
                             <p>Episode: {episode.episode}</p>
                             <p>Air Date: {episode.air_date}</p>
                             <p>Character(s): 
@@ -31,9 +25,12 @@ const Episode = (props) => {
                                 })} */}
                                 {/* {episode.charactersList} */}
                             </p>
-                            <p><CardLink href={episode.charactersList} onClick={props.loadDetailsModal}>All Character(s):</CardLink></p>
-                        </CardBody>
-                        </Card>
+                            <p><Link href={episode.charactersList} onClick={props.loadDetailsModal}>All Character(s):</Link></p>
+                        </ModalBody>
+                        <ModalFooter>
+                        <Button outline color="secondary" onClick={toggle}>Close</Button>
+                        </ModalFooter>
+                        </Modal>
                     )
                 })
                     : null}
@@ -42,4 +39,4 @@ const Episode = (props) => {
     );
 };
 
-export default Episode;
+export default EpisodeModal;
